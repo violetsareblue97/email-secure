@@ -2,72 +2,86 @@ import streamlit as st
 import joblib
 import re
 
-# 1. Konfigurasi Halaman & CSS
-st.set_page_config(page_title="Email Phishing Detector", layout="wide")
+# 1. Konfigurasi Halaman & CSS Modern
+st.set_page_config(page_title="Phishing Detector", layout="wide")
 
 st.markdown("""
     <style>
-    /* Background Utama */
+    /* Mengatur palet warna dan font global */
     .stApp {
-        background-color: #2c4f40;
-        color: white;
-        font-family: 'Helvetica', sans-serif;
+        background-color: #1a1a1a;
+        color: #e0e0e0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    /* Bar Judul Atas */
+    /* Bar Judul Atas yang Minimalis */
     .header-bar {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: rgba(255, 255, 255, 0.1);
-        padding: 15px;
-        border-radius: 0px 0px 15px 15px;
-        margin-bottom: 30px;
-        border-bottom: 1px solid #ffffff33;
+        background-color: #262626;
+        padding: 30px;
+        text-align: center;
+        border-bottom: 3px solid #10b981;
+        margin-bottom: 50px;
     }
 
     .header-title {
-        font-size: 24px;
-        font-weight: bold;
-        letter-spacing: 1px;
+        color: #ffffff;
+        font-size: 28px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
     }
 
-    /* Kotak Input Teks */
+    /* Area Input Teks Modern */
     .stTextArea textarea {
-        background-color: #ffffff !important;
-        color: #333333 !important;
-        border-radius: 15px !important;
+        background-color: #2d2d2d !important;
+        color: #ffffff !important;
+        border: 1px solid #404040 !important;
+        border-radius: 8px !important;
+        padding: 20px !important;
         font-size: 16px !important;
-        box-shadow: 0px 8px 20px rgba(0,0,0,0.4) !important;
     }
 
-    /* Gaya Tombol Utama */
+    .stTextArea textarea:focus {
+        border-color: #10b981 !important;
+        box-shadow: 0 0 0 1px #10b981 !important;
+    }
+
+    /* Tombol Analisis Utama */
     .stButton>button {
         width: 100%;
-        background-color: #ffffff !important;
-        color: #2c4f40 !important;
-        font-weight: bold !important;
+        background-color: #10b981 !important;
+        color: #ffffff !important;
+        font-weight: 600 !important;
         height: 55px !important;
-        border-radius: 30px !important;
+        border-radius: 8px !important;
         border: none !important;
-        font-size: 18px !important;
-        transition: 0.3s !important;
+        font-size: 16px !important;
+        margin-top: 20px;
+        transition: all 0.3s ease;
     }
 
     .stButton>button:hover {
-        background-color: #e0e0e0 !important;
-        transform: translateY(-2px);
+        background-color: #059669 !important;
+        letter-spacing: 1px;
     }
-    
-    /* Tombol Share Kecil */
-    .share-container {
-        text-align: right;
-        margin-top: -20px;
+
+    /* Tombol Share Minimalis */
+    .share-btn button {
+        background-color: transparent !important;
+        color: #10b981 !important;
+        border: 1px solid #10b981 !important;
+        height: 35px !important;
+    }
+
+    /* Label Input */
+    label {
+        color: #a3a3a3 !important;
+        margin-bottom: 10px !important;
     }
     </style>
     """, unsafe_allow_html=True)
 
-# 2. Fungsi Pendukung
+# 2. Logika Pemrosesan Data
 def clean_text(text):
     text = str(text).lower()
     text = re.sub(r'http\S+|www\S+|https\S+', 'link_url', text)
@@ -81,25 +95,20 @@ def load_model():
 
 model = load_model()
 
-# 3. Bar Judul
-st.markdown('<div class="header-bar"><span class="header-title">Email Phishing Detector</span></div>', unsafe_allow_html=True)
+# 3. Struktur Header
+st.markdown('<div class="header-bar"><div class="header-title">Email Phishing Detector</div></div>', unsafe_allow_html=True)
 
-# 4. Fitur Share
-col_left, col_right = st.columns([5, 1])
-with col_right:
-    if st.button("🔗 Share"):
-        # Logika copy link sederhana menggunakan st.code agar user mudah mengklik
-        st.info("Salin link di bawah ini:")
-        st.code("https://emailphishingdetector.streamlit.app/") # Ganti dengan link asli web Anda
+# 4. Fungsi Share (Kanan Atas)
+c1, c2 = st.columns([6, 1])
+with c2:
+    if st.button("Share Link"):
+        st.code("https://share.streamlit.io/user/repo") # Ganti dengan link Anda
 
-# 5. Konten Utama
-col1, col2, col3 = st.columns([1, 2, 1])
+# 5. Konten Utama Tengah
+col_a, col_b, col_c = st.columns([1, 2, 1])
 
-with col2:
-    st.markdown("<br>", unsafe_allow_html=True)
-    email_input = st.text_area("Tempel isi email:", height=250, placeholder="Masukkan teks email yang ingin diperiksa...")
-    
-    st.markdown("<br>", unsafe_allow_html=True)
+with col_b:
+    email_input = st.text_area("Input Teks Email", height=300)
     
     if st.button("Analisis Sekarang"):
         if email_input:
@@ -107,12 +116,12 @@ with col2:
             prob = model.predict_proba([cleaned_input])[0]
             skor_phishing = prob[1]
             
-            st.markdown("---")
+            st.write("---")
             if skor_phishing > 0.75:
-                st.error(f"PHISHING ({skor_phishing*100:.1f}%)")
+                st.error(f"Status: Terdeteksi Phishing ({skor_phishing*100:.1f}%)")
             elif skor_phishing > 0.40:
-                st.warning(f"MENCURIGAKAN ({skor_phishing*100:.1f}%)")
+                st.warning(f"Status: Mencurigakan ({skor_phishing*100:.1f}%)")
             else:
-                st.success(f"AMAN (Skor: {skor_phishing*100:.1f}%)")
+                st.success(f"Status: Aman ({skor_phishing*100:.1f}%)")
         else:
-            st.warning("Silakan masukkan teks terlebih dahulu.")
+            st.info("Silakan masukkan teks email terlebih dahulu")
