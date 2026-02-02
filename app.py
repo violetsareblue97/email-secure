@@ -39,12 +39,12 @@ if st.button("Analisis Sekarang"):
         # Logika Threshold agar tidak terlalu sensitif
         if skor_phishing > 0.75:
             st.error(f"POSITIF PHISHING (Keyakinan: {skor_phishing*100:.2f}%)")
-            st.write("Indikasi kuat penipuan. Jangan klik link apa pun dari email ini.")
+            st.write("Indikasi kuat penipuan! Jangan klik link apa pun dari email ini.")
         elif skor_phishing > 0.40:
             st.warning(f"MENCURIGAKAN (Keyakinan: {skor_phishing*100:.2f}%)")
-            st.write("Email ini memiliki pola yang mirip phishing. Tetap waspada.")
+            st.write("Waspada! email ini memiliki pola yang mirip phishing.")
         else:
             st.success(f"AMAN (Skor Phishing: {skor_phishing*100:.2f}%)")
-            st.write("Email ini terlihat seperti korespondensi normal.")
+            st.write("Email ini terlihat seperti korespondensi normal dan aman.")
     else:
         st.warning("Mohon masukkan teks terlebih dahulu.")
