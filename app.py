@@ -43,6 +43,7 @@ st.markdown("""
         padding: 20px !important;
         background: white !important;
         font-size: 16px !important;
+        color: #1a1a1a;
         box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05) !important;
     }
 
@@ -137,19 +138,6 @@ with col_left:
                 st.write("Email ini terlihat seperti korespondensi normal.")
         else:
             st.warning("Mohon masukkan teks terlebih dahulu.")
-
-with col_right:
-    # Ilustrasi Email Minimalis
-    st.markdown("""
-        <div class="card-right">
-            <div style="font-size: 100px; margin-bottom: 20px;">🛡️</div>
-            <div style="font-weight: 800; font-size: 24px;">AI PROTECTION</div>
-            <div style="opacity: 0.8; font-size: 14px; margin-top: 10px;">Security Model Version 2.4</div>
-            <div style="background: rgba(255,255,255,0.2); display: inline-block; padding: 8px 20px; border-radius: 50px; font-size: 12px; margin-top: 30px; font-weight: 700; border: 1px solid white;">
-                SYSTEM ACTIVE
-            </div>
-        </div>
-    """, unsafe_allow_html=True)
 
 # 5. Share Functionality di Sidebar
 with st.sidebar:
