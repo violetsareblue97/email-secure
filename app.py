@@ -7,8 +7,7 @@ st.set_page_config(page_title="Email Secure+", layout="wide")
 
 st.markdown("""
     <style>
-    /* Font dan Background Global */
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap');
     
     .stApp {
         background-color: #f8f9fa;
@@ -16,134 +15,130 @@ st.markdown("""
         color: #1a1a1a;
     }
 
-    /* Header Navigation */
+    /* Navigasi */
     .nav-bar {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 20px 5%;
+        padding: 20px 8%;
         background: white;
         border-bottom: 1px solid #eee;
     }
-    .brand { font-weight: 700; font-size: 20px; letter-spacing: 1px; }
+    .brand { font-weight: 800; font-size: 22px; letter-spacing: -0.5px; color: #10b981; }
 
-    /* Hero Section Layout */
-    .hero-container {
-        display: flex;
-        align-items: center;
-        padding: 80px 10%;
-        gap: 50px;
-    }
-
-    .hero-text { flex: 1; }
-    .hero-image { flex: 1; text-align: center; }
-
+    /* Headline */
     .headline {
-        font-size: 48px;
+        font-size: 64px;
         font-weight: 800;
-        line-height: 1.1;
-        margin-bottom: 20px;
+        line-height: 1;
+        margin-bottom: 25px;
         color: #1a1a1a;
+        letter-spacing: -2px;
     }
 
-    /* Input Area Styling */
+    /* Input Styling */
     .stTextArea textarea {
-        border-radius: 12px !important;
-        border: 1px solid #ddd !important;
-        padding: 15px !important;
+        border-radius: 16px !important;
+        border: 1px solid #e5e7eb !important;
+        padding: 20px !important;
         background: white !important;
-        color: #333 !important;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+        font-size: 16px !important;
+        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05) !important;
     }
 
-    /* Button Styling */
+    /* Tombol Analisis */
     .stButton>button {
         background-color: #10b981 !important;
         color: white !important;
         border: none !important;
-        padding: 12px 30px !important;
-        border-radius: 8px !important;
+        padding: 15px 0px !important;
+        border-radius: 12px !important;
         font-weight: 700 !important;
-        transition: 0.3s;
+        font-size: 16px !important;
+        transition: 0.3s ease;
         width: 100%;
+        margin-top: 10px;
     }
     .stButton>button:hover {
         background-color: #059669 !important;
         transform: translateY(-2px);
-    }
-
-    /* Ilustrasi Email Simpel */
-    .email-illustration {
-        background: #10b981;
-        width: 300px;
-        height: 200px;
-        margin: 0 auto;
-        border-radius: 20px;
-        position: relative;
-        box-shadow: 20px 20px 0px #d1fae5;
+        box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.4);
     }
     </style>
     """, unsafe_allow_html=True)
 
-# 2. Logika Pembersihan & Model
-def clean_text(text):
+# 2. Logika Akurasi Tinggi (Mengembalikan Kode Sebelumnya)
+def clean_text_accurate(text):
     text = str(text).lower()
-    text = re.sub(r'http\S+|www\S+|https\S+', 'url', text)
+    # Menjaga konteks URL dan Email agar TF-IDF N-gram bekerja maksimal
+    text = re.sub(r'http\S+|www\S+|https\S+', 'link_url', text)
+    text = re.sub(r'\S+@\S+', 'email_address', text)
     text = re.sub(r'[^a-zA-Z\s]', '', text)
     return text
 
 @st.cache_resource
 def load_model():
+    # Pastikan model di-load dengan benar
     return joblib.load("phishing_model.joblib")
 
 model = load_model()
 
-# 3. Struktur Navigasi
+# 3. Tampilan Navigasi
 st.markdown("""
     <div class="nav-bar">
         <div class="brand">EMAIL SECURE+</div>
-        <div style="display: flex; gap: 30px; font-size: 14px; color: #666;">
+        <div style="display: flex; gap: 40px; font-size: 14px; font-weight: 600; color: #4b5563;">
             <span>Features</span><span>Support</span><span>Dashboard</span>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-# 4. Hero Section
-col_text, col_img = st.columns([1.2, 1])
+# 4. Hero Section Layout
+st.markdown("<br><br>", unsafe_allow_html=True)
+col_left, col_right = st.columns([1.2, 1], gap="large")
 
-with col_text:
-    st.markdown('<div class="headline">TOTAL<br>INBOX<br>PROTECTED</div>', unsafe_allow_html=True)
-    st.write("Analisis email Anda secara instan dengan teknologi kecerdasan buatan.")
+with col_left:
+    st.markdown('<div class="headline">TOTAL<br>INBOX<br>PROTECTED.</div>', unsafe_allow_html=True)
+    st.write("Deteksi ancaman siber pada pesan Anda menggunakan model Machine Learning yang telah dioptimalkan.")
     
-    email_input = st.text_area("Tempel teks email di sini", height=200, label_visibility="collapsed", placeholder="Enter email content...")
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # Input Area
+    email_input = st.text_area("Analisis Konten", height=250, label_visibility="collapsed", placeholder="Enter or paste your email content here...")
     
     if st.button("ANALISIS SEKARANG"):
         if email_input:
-            cleaned = clean_text(email_input)
-            prob = model.predict_proba([cleaned])[0][1]
+            # Menggunakan fungsi pembersihan yang akurat
+            cleaned = clean_text_accurate(email_input)
+            prob = model.predict_proba([cleaned])[0]
+            skor_phishing = prob[1]
             
             st.markdown("---")
-            if prob > 0.75:
-                st.error(f"Status: Phishing Detected ({prob*100:.1f}%)")
-            elif prob > 0.40:
-                st.warning(f"Status: Suspicious ({prob*100:.1f}%)")
+            # Ambang batas (Threshold) 75% untuk akurasi lebih baik
+            if skor_phishing > 0.75:
+                st.error(f"STATUS: TERDETEKSI PHISHING ({skor_phishing*100:.1f}%)")
+            elif skor_phishing > 0.40:
+                st.warning(f"STATUS: MENCURIGAKAN ({skor_phishing*100:.1f}%)")
             else:
-                st.success(f"Status: Safe ({prob*100:.1f}%)")
+                st.success(f"STATUS: EMAIL AMAN ({skor_phishing*100:.1f}%)")
         else:
-            st.info("Mohon masukkan teks terlebih dahulu.")
+            st.info("Harap masukkan teks email terlebih dahulu.")
 
-with col_img:
-    # Menggunakan komponen visual pengganti foto orang
+with col_right:
+    # Ilustrasi Visual Pengganti Foto
     st.markdown("""
-        <div style="padding-top: 50px;">
-            <div style="background: #10b981; padding: 60px; border-radius: 30px; text-align: center; color: white;">
-                <div style="font-size: 80px;">✉️</div>
-                <div style="font-weight: 800; font-size: 20px; margin-top: 10px;">SECURE ANALYTICS</div>
-                <div style="background: white; color: #10b981; display: inline-block; padding: 5px 15px; border-radius: 20px; font-size: 12px; margin-top: 15px; font-weight: bold;">NEW UPDATE</div>
+        <div style="background: #10b981; padding: 80px 40px; border-radius: 40px; text-align: center; color: white; box-shadow: 30px 30px 0px #d1fae5;">
+            <div style="font-size: 100px; margin-bottom: 20px;">🛡️</div>
+            <div style="font-weight: 800; font-size: 24px; letter-spacing: 1px;">AI SECURITY ENGINE</div>
+            <div style="opacity: 0.8; font-size: 14px; margin-top: 10px;">Versi 2.0 - Akurasi Optimal</div>
+            <div style="background: rgba(255,255,255,0.2); display: inline-block; padding: 8px 20px; border-radius: 50px; font-size: 12px; margin-top: 30px; font-weight: 700; border: 1px solid white;">
+                PROTECTION ACTIVE
             </div>
         </div>
     """, unsafe_allow_html=True)
 
-# 5. Share Button (Minimalis di bawah)
-if st.sidebar.button("Share Application"):
-    st.sidebar.code("https://share.streamlit.io/your-link")
+# 5. Share Option (Sidebar)
+with st.sidebar:
+    st.title("Settings")
+    if st.button("Share App Link"):
+        st.code("https://share.streamlit.io/app-anda")
