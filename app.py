@@ -108,15 +108,15 @@ model = load_model()
 
 st.markdown("""
     <div class="main-header">
-        <div class="brand-name">Secure Analytics</div>
-        <div class="main-title">Deteksi Phishing<br>Berbasis AI</div>
+        <div class="brand-name">Email Safe+</div>
+        <div class="main-title">Deteksi Email Phishing<br>Berbasis AI</div>
     </div>
     """, unsafe_allow_html=True)
 
 col1, col2, col3 = st.columns([0.1, 0.8, 0.1])
 
 with col2:
-    email_input = st.text_area("", height=220, placeholder="Tempel konten email yang ingin Anda periksa...")
+    email_input = st.text_area("", height=220, placeholder="Tempel isi badan email yang ingin diperiksa disini...")
     
     if st.button("Analisis Keamanan"):
         if email_input:
@@ -132,7 +132,7 @@ with col2:
                 st.markdown("<small>Ditemukan manipulasi teks atau indikasi penipuan yang kuat.</small>", unsafe_allow_html=True)
             elif skor > 0.35:
                 st.warning(f"Perhatian: Email Mencurigakan ({skor*100:.1f}%)")
-                st.markdown("<small>Pola email ini menyerupai teknik phishing umum. Harap waspada.</small>", unsafe_allow_html=True)
+                st.markdown("<small>Pola email ini menyerupai phishing. Harap waspada.</small>", unsafe_allow_html=True)
             else:
                 st.success(f"Aman: Email Terverifikasi ({skor*100:.1f}%)")
                 st.markdown("<small>Tidak ditemukan tanda-tanda ancaman siber yang mencurigakan.</small>", unsafe_allow_html=True)
