@@ -3,8 +3,7 @@ import joblib
 import re
 import unicodedata
 
-# 1. CSS untuk Desain Sleek & Modern
-st.set_page_config(page_title="SecureMail AI", layout="centered")
+st.set_page_config(page_title="EmailSecure", layout="centered")
 
 st.markdown("""
     <style>
@@ -85,17 +84,14 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# 2. Logika Akurasi Tinggi (Advanced Preprocessing)
+#Logika Akurasi
 def clean_text_accurate(text):
-    # Normalisasi karakter unik (Unicode) agar teks aneh bisa dibaca
     text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore').decode('utf-8')
     text = text.lower()
     
-    # Menjaga konteks URL dan Email
     text = re.sub(r'http\S+|www\S+|https\S+', 'link_url', text)
     text = re.sub(r'\S+@\S+', 'email_address', text)
-    
-    # Urgency Tagging untuk deteksi pola tekanan
+
     urgency_list = ['action required', 'pending', 'selected', 'reward', 'confirm', 'immediately']
     for word in urgency_list:
         text = text.replace(word, f' urgent_{word} ')
@@ -110,7 +106,6 @@ def load_model():
 
 model = load_model()
 
-# 3. Tampilan UI Sleek
 st.markdown("""
     <div class="main-header">
         <div class="brand-name">Secure Analytics</div>
@@ -118,7 +113,6 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
-# Container Tengah
 col1, col2, col3 = st.columns([0.1, 0.8, 0.1])
 
 with col2:
@@ -126,7 +120,7 @@ with col2:
     
     if st.button("Analisis Keamanan"):
         if email_input:
-            # Eksekusi Logika Akurat
+
             cleaned = clean_text_accurate(email_input)
             prob = model.predict_proba([cleaned])[0]
             skor = prob[1]
@@ -147,4 +141,14 @@ with col2:
         else:
             st.info("Silakan masukkan teks email terlebih dahulu.")
 
-st.markdown("<br><br><p style='text-align:center; color:#9ca3af; font-size:12px;'>Powered by AI Security Engine v2.5</p>", unsafe_allow_html=True)
+ # SIDENOTE
+    st.markdown("""
+        <div class="info-container">
+            <div class="info-title">⚠️ Cannot copy the text?</div>
+            <div class="info-text">
+                Jika email Anda sepenuhnya berupa gambar (tidak bisa di-highlight), ini adalah tanda kuat <b>Image-Based Phishing</b>. 
+                Scammer menggunakan teknik ini untuk menghindari filter keamanan teks. 
+                <b>Jangan klik bagian mana pun dari gambar tersebut!</b> Segera hapus dan lapor sebagai spam.
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
