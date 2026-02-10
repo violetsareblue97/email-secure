@@ -3,102 +3,129 @@ import joblib
 import re
 import unicodedata
 
-st.set_page_config(page_title="EmailSecure", layout="centered")
+st.set_page_config(page_title="EmailSafe+ AI", layout="centered")
 
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Inter:wght@400;600&display=swap');
     
     .stApp {
-        background-color: #ffffff;
-        font-family: 'Plus Jakarta Sans', sans-serif;
+        background: #050505;
+        color: #e6edf3;
+        font-family: 'Inter', sans-serif;
     }
 
-    /* Minimalist Header */
+    /* Header Section */
     .main-header {
         text-align: center;
-        padding: 60px 0 20px 0;
+        padding: 50px 0 30px 0;
+        border-bottom: 1px solid #1f2937;
+        margin-bottom: 40px;
     }
     
     .brand-name {
-        font-weight: 800;
-        font-size: 14px;
-        letter-spacing: 3px;
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700;
+        font-size: 11px;
+        letter-spacing: 6px;
         color: #10b981;
         text-transform: uppercase;
-        margin-bottom: 10px;
     }
 
     .main-title {
-        font-size: 42px;
-        font-weight: 800;
-        color: #111827;
-        letter-spacing: -1px;
-        line-height: 1.2;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 40px;
+        font-weight: 700;
+        color: #ffffff;
+        letter-spacing: -1.5px;
+        margin-top: 5px;
     }
 
-    /* Input Area */
+    /* Input Field */
     .stTextArea textarea {
-        border-radius: 16px !important;
-        border: 1px solid #f3f4f6 !important;
-        padding: 24px !important;
-        background: #f9fafb !important;
-        font-size: 16px !important;
-        color: #374151 !important;
-        transition: all 0.3s ease;
+        border-radius: 8px !important;
+        border: 1px solid #30363d !important;
+        padding: 20px !important;
+        background: #0d1117 !important;
+        color: #ffffff !important;
+        font-size: 15px !important;
     }
 
     .stTextArea textarea:focus {
         border-color: #10b981 !important;
-        background: #ffffff !important;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05) !important;
+        box-shadow: 0 0 0 1px #10b981 !important;
     }
 
-    /*  Button */
+    /* Action Button */
     .stButton>button {
-        background-color: #111827 !important;
-        color: white !important;
-        padding: 14px 28px !important;
-        border-radius: 12px !important;
-        font-weight: 600 !important;
-        font-size: 15px !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        padding: 12px !important;
+        border-radius: 6px !important;
+        font-weight: 700 !important;
+        font-family: 'Space Grotesk', sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 2px;
         border: none !important;
         width: 100% !important;
-        margin-top: 20px;
-        transition: all 0.2s ease;
+        margin-top: 10px;
+        transition: 0.3s;
     }
 
     .stButton>button:hover {
-        background-color: #10b981 !important;
-        transform: translateY(-1px);
+        background: #10b981 !important;
+        color: #ffffff !important;
     }
 
-    /* Result Cards */
-    .result-container {
-        margin-top: 40px;
+    /* Sidenote Section */
+    .info-container {
+        margin-top: 60px;
+        padding: 30px;
+        background: #0a0a0a;
+        border: 1px solid #1f2937;
+        border-radius: 4px;
+    }
+    
+    .info-title {
+        color: #ffffff;
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700;
+        font-size: 14px;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .info-text {
+        color: #9ca3af;
+        font-size: 13px;
+        line-height: 1.7;
+        text-align: justify;
+    }
+
+    .result-card {
         padding: 24px;
-        border-radius: 16px;
-        border: 1px solid #f3f4f6;
-        color: #1a1a1a
+        margin-top: 30px;
+        border-radius: 4px;
+        background: #111111;
+        border: 1px solid #1f2937;
     }
     </style>
     """, unsafe_allow_html=True)
 
-#Logika Akurasi
+#LOGIKA ANALISIS
 def clean_text_accurate(text):
     text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore').decode('utf-8')
     text = text.lower()
-    
     text = re.sub(r'http\S+|www\S+|https\S+', 'link_url', text)
     text = re.sub(r'\S+@\S+', 'email_address', text)
-
+    
     urgency_list = ['action required', 'pending', 'selected', 'reward', 'confirm', 'immediately']
     for word in urgency_list:
         text = text.replace(word, f' urgent_{word} ')
         
     text = re.sub(r'[^a-zA-Z\s]', ' ', text)
-    text = " ".join(text.split())
-    return text
+    return " ".join(text.split())
 
 @st.cache_resource
 def load_model():
@@ -106,49 +133,46 @@ def load_model():
 
 model = load_model()
 
+#UI LAYOUT
 st.markdown("""
     <div class="main-header">
-        <div class="brand-name">Email Safe+</div>
-        <div class="main-title">Deteksi Email Phishing<br>Berbasis AI</div>
+        <div class="brand-name">Neural Protocol v4</div>
+        <div class="main-title">Phishing Intelligence</div>
     </div>
     """, unsafe_allow_html=True)
 
-col1, col2, col3 = st.columns([0.1, 0.8, 0.1])
+col1, col2, col3 = st.columns([0.05, 0.9, 0.05])
 
 with col2:
-    email_input = st.text_area("", height=220, placeholder="Tempel isi badan email yang ingin diperiksa disini...")
+    email_input = st.text_area("", height=220, placeholder="Input raw telemetry or email text for analysis...")
     
-    if st.button("Analisis Keamanan"):
+    if st.button("Run Diagnostic"):
         if email_input:
-
             cleaned = clean_text_accurate(email_input)
             prob = model.predict_proba([cleaned])[0]
             skor = prob[1]
             
-            st.markdown('<div class="result-container">', unsafe_allow_html=True)
-            
+            st.markdown('<div class="result-card">', unsafe_allow_html=True)
             if skor > 0.65:
-                st.error(f"Peringatan: Terdeteksi Phishing ({skor*100:.1f}%)")
-                st.markdown("<small>Ditemukan manipulasi teks atau indikasi penipuan yang kuat.</small>", unsafe_allow_html=True)
+                st.error(f"CRITICAL ({skor*100:.1f}%)")
+                st.caption("Email ini merupakan email Phishing.")
             elif skor > 0.35:
-                st.warning(f"Perhatian: Email Mencurigakan ({skor*100:.1f}%)")
-                st.markdown("<small>Pola email ini menyerupai phishing. Harap waspada.</small>", unsafe_allow_html=True)
+                st.warning(f"WARNING ({skor*100:.1f}%)")
+                st.caption("Email ini mencurigakan.")
             else:
-                st.success(f"Aman: Email Terverifikasi ({skor*100:.1f}%)")
-                st.markdown("<small>Tidak ditemukan tanda-tanda ancaman siber yang mencurigakan.</small>", unsafe_allow_html=True)
-                
+                st.success(f"CLEAR ({skor*100:.1f}%)")
+                st.caption("Email ini bukan phishing.")
             st.markdown('</div>', unsafe_allow_html=True)
-        else:
-            st.info("Silakan masukkan teks email terlebih dahulu.")
 
- # SIDENOTE
+    #SIDENOTE
     st.markdown("""
         <div class="info-container">
-            <div class="info-title">⚠️ Cannot copy the text?</div>
+            <div class="info-title">Security Advisory: Image-Based Obfuscation</div>
             <div class="info-text">
-                Jika email Anda sepenuhnya berupa gambar (tidak bisa di-highlight), ini adalah tanda kuat <b>Image-Based Phishing</b>. 
-                Scammer menggunakan teknik ini untuk menghindari filter keamanan teks. 
-                <b>Jangan klik bagian mana pun dari gambar tersebut!</b> Segera hapus dan lapor sebagai spam.
+                Dalam kasus di mana konten email tidak dapat disalin, kemungkinan besar email tersebut adalah 
+                <b>Visual Phishing</b>. Metode ini digunakan oleh penyerang untuk menghindari inspeksi berbasis teks 
+                oleh filter keamanan. Kebijakan keamanan standar menyarankan untuk tidak melakukan interaksi klik 
+                pada elemen visual dan segera melakukan terminasi pada pesan tersebut.
             </div>
         </div>
     """, unsafe_allow_html=True)
