@@ -10,6 +10,12 @@ st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
     
+    /* 1. Menghapus Navbar, Settings, dan Footer */
+    #MainMenu {visibility: hidden;}
+    header {visibility: hidden;}
+    footer {visibility: hidden;}
+    .stAppDeployButton {display:none;}
+
     .stApp {
         background-color: #050505;
         font-family: 'Plus Jakarta Sans', sans-serif;
@@ -19,7 +25,7 @@ st.markdown("""
     /* Minimalist Header Futuristik */
     .main-header {
         text-align: center;
-        padding: 60px 0 20px 0;
+        padding: 40px 0 20px 0;
     }
     
     .brand-name {
@@ -39,21 +45,31 @@ st.markdown("""
         line-height: 1.2;
     }
 
-    /* Input Area Dark */
-    .stTextArea textarea {
+    /* 2. Custom Style untuk Label di atas Input */
+    .input-label {
+        font-size: 14px;
+        font-weight: 600;
+        color: #8b949e;
+        margin-bottom: 8px;
+        margin-top: 15px;
+    }
+
+    /* 3. Menyamakan Desain Text Input dan Text Area */
+    .stTextInput input, .stTextArea textarea {
         border-radius: 16px !important;
         border: 1px solid #1f2937 !important;
-        padding: 24px !important;
+        padding: 16px 24px !important;
         background: #0d1117 !important;
         font-size: 16px !important;
         color: #ffffff !important;
         transition: all 0.3s ease;
     }
 
-    .stTextArea textarea:focus {
+    .stTextInput input:focus, .stTextArea textarea:focus {
         border-color: #10b981 !important;
         background: #0d1117 !important;
         box-shadow: 0 0 20px rgba(16, 185, 129, 0.1) !important;
+        outline: none !important;
     }
 
     /* Button Glow */
@@ -116,7 +132,7 @@ def load_model():
 
 model = load_model()
 
-# Header (Teks Tetap Sama)
+# Header
 st.markdown("""
     <div class="main-header">
         <div class="brand-name">Email Safe+</div>
@@ -124,10 +140,13 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
-# Menambahkan input email pengirim untuk membantu akurasi (Back-end)
-sender_input = st.text_input("Email Pengirim (opsional)", placeholder="Sangat disarankan isi untuk akurasi maksimal...")
+# Input Alamat Pengirim
+st.markdown('<p class="input-label">Alamat Pengirim (contoh: abc@gmail.com)</p>', unsafe_allow_html=True)
+sender_input = st.text_input(label="", label_visibility="collapsed", placeholder="Sangat disarankan isi untuk akurasi maksimal...")
 
-email_input = st.text_area("", height=220, placeholder="Tempel isi badan email yang ingin diperiksa disini...")
+# Input Isi Email
+st.markdown('<p class="input-label">Isi badan email:</p>', unsafe_allow_html=True)
+email_input = st.text_area(label="", label_visibility="collapsed", height=220, placeholder="Tempel isi badan email yang ingin diperiksa disini...")
 
 if st.button("Analisis Keamanan"):
     if email_input:
@@ -135,13 +154,11 @@ if st.button("Analisis Keamanan"):
         prob = model.predict_proba([cleaned])[0]
         skor = prob[1]
         
-        # Penyesuaian Skor jika domain terpercaya (Whitelist Logic)
         if sender_input and check_domain_safety(sender_input):
-            skor = skor * 0.1 # Reduksi skor bahaya karena pengirim terverifikasi
+            skor = skor * 0.1 
 
         st.markdown('<div class="result-container">', unsafe_allow_html=True)
         
-        # Tampilan Hasil (Teks Tetap Sama Persis)
         if skor > 0.65:
             st.error(f"Peringatan: Terdeteksi Phishing ({skor*100:.1f}%)")
             st.markdown("<small>Ditemukan manipulasi teks atau indikasi penipuan yang kuat.</small>", unsafe_allow_html=True)
@@ -156,10 +173,10 @@ if st.button("Analisis Keamanan"):
     else:
         st.info("Silakan masukkan teks email terlebih dahulu.")
 
-# SIDENOTE (Teks Tetap Sama Persis)
+# SIDENOTE
 st.markdown("""
     <div class="info-container" style="margin-top:40px; padding:20px; border-left:4px solid #10b981; background:#111111;">
-        <div class="info-title" style="color:white; font-weight:bold;">⚠️ Cannot copy the text?</div>
+        <div class="info-title" style="color:white; font-weight:bold;">⚠️ Tidak bisa menyalin teks email?</div>
         <div class="info-text" style="color:#8b949e; font-size:14px;">
             Jika email Anda sepenuhnya berupa gambar (tidak bisa di-highlight), ini adalah tanda kuat <b>Image-Based Phishing</b>. 
             Scammer menggunakan teknik ini untuk menghindari filter keamanan teks. 
