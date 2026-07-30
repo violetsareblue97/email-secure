@@ -23,13 +23,13 @@ The final score is calculated as: `Model Score × DNS Multiplier`. Results are c
 
 ---
 
-## 🛠️ Challenges & Debugging
+## Challenges & Debugging
 
-Building this project involved overcoming several technical hurdles that provided valuable insights into software development and system integration:
+When building this project, I overcomed several technical hurdles:
 
 * **Version Control:** Resolved `non-fast-forward` errors arising from conflicts between manual web uploads and local Git commits. Implemented proper Git branching and synchronization strategies to maintain a clean, professional repository history.
-* **Dependency Management:** Diagnosed `ImportError` and `ModuleNotFoundError` issues by isolating the development environment using `.venv` and ensuring the `requirements.txt` file accurately reflected necessary packages, such as `dnspython` and `google-generativeai`.
-* **API Rate Limit Handling:** Encountered `429 RESOURCE_EXHAUSTED` errors when querying external APIs. Implemented error handling with `try-except` blocks to provide graceful user feedback and prevent application crashes.
+* **Dependency Management:** Diagnosed `ImportError` and `ModuleNotFoundError` issues by isolating the development environment using `.venv` and ensuring the `requirements.txt` file accurately reflected necessary packages.
+* **API Rate Limit Handling:** Encountered `429 RESOURCE_EXHAUSTED` errors when querying external APIs. Implemented error handling with `try-except` blocks to provide user feedback and prevent application crashes.
 * **Environment Configuration:** Debugged Python interpreter pathing issues within VS Code to ensure consistent application behavior across local virtual environments and production paths.
 
 ---
